@@ -1,24 +1,16 @@
 package com.turnkey.phonebook.enitity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import com.turnkey.phonebook.enums.ContactGroup;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -28,28 +20,27 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "contacts")
 @EntityListeners(AuditingEntityListener.class)
 public class Contact extends BaseEntity{
     private String firstName;
     private String lastName;
-    private String profession;
     @Column(unique = true)
     private String email;
-    private String password;
-    private String gender;
-    private LocalDate dob;
     private String profilePicUrl;
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String phoneNumber;
     private String mobileNumber;
     private String workPhone;
     private boolean isFavorite;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "contact_group")
+    private ContactGroup contactGroup;
 
-    @OneToOne(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "address_id") // Foreign key in the contacts table
     private Address address;
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @ToString.Exclude
-    private List<Group> groups;
+
 
     @Override
     public final boolean equals(Object o) {

@@ -1,4 +1,4 @@
-package com.turnkey.phonebook.response;
+package com.turnkey.phonebook.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -14,10 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AddressResponse {
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime createdAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime modifiedAt;
     private String country;
     private String street;
     private String city;
