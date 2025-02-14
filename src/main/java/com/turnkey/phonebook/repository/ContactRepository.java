@@ -18,5 +18,5 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, JpaSpec
 
     void deleteAllByIdIsIn(Collection<Long> ids);
 
-    Page<Contact> findContactsByFavorite(boolean favorite, Pageable pageable);
+    Page<Contact> findContactsByIsFavorite(boolean isFavorite, Pageable pageable);
 }

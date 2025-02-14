@@ -10,7 +10,7 @@ public class ContactSpecification {
     public static Specification<Contact> searchByKeyword(String keyword) {
         return (root, query, criteriaBuilder) -> {
             if (keyword == null || keyword.trim().isEmpty()) {
-                return criteriaBuilder.conjunction(); // Return all if no keyword
+                return criteriaBuilder.conjunction(); 
             }
 
             String searchTerm = "%" + keyword.toLowerCase() + "%";

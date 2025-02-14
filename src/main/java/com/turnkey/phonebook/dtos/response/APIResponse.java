@@ -1,4 +1,4 @@
-package com.turnkey.phonebook.response;
+package com.turnkey.phonebook.dtos.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

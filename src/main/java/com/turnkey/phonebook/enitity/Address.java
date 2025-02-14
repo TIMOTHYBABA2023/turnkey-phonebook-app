@@ -2,6 +2,7 @@ package com.turnkey.phonebook.enitity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,9 +28,6 @@ public class Address extends BaseEntity{
     private String city;
     private String state;
     private String zipCode;
-
-    @OneToOne
-    private Contact contact;
 
     @Override
     public final boolean equals(Object o) {

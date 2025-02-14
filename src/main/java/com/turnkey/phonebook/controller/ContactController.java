@@ -1,29 +1,29 @@
 package com.turnkey.phonebook.controller;
 
 
-import com.turnkey.phonebook.request.NewContactRequest;
-import com.turnkey.phonebook.request.UpdateContactRequest;
-import com.turnkey.phonebook.response.APIResponse;
-import com.turnkey.phonebook.response.ContactResponseData;
+import com.turnkey.phonebook.dtos.request.BulkDeleteRequest;
+import com.turnkey.phonebook.dtos.request.NewContactRequest;
+import com.turnkey.phonebook.dtos.request.UpdateContactRequest;
+import com.turnkey.phonebook.dtos.response.APIResponse;
+import com.turnkey.phonebook.dtos.response.ContactResponseData;
 import com.turnkey.phonebook.service.ContactService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.StringWriter;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/contacts")
 @RequiredArgsConstructor
+@Slf4j
 public class ContactController {
 
     private final ContactService contactService;
@@ -49,8 +49,25 @@ public class ContactController {
         return ResponseEntity.status(apiResponse.getStatusCode()).body(apiResponse);
     }
 
+    @GetMapping("/allSortedContacts")
+    public ResponseEntity<APIResponse<Page<ContactResponseData>>> getAllSortedContacts(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "sort", defaultValue = "firstName") String sort,
+            @RequestParam(value = "direction", defaultValue = "ASC") String direction
+    ) {
+        APIResponse<Page<ContactResponseData>> apiResponse = contactService.getAllSortedContacts(page, size, sort, direction);
+        return ResponseEntity.status(apiResponse.getStatusCode()).body(apiResponse);
+    }
+
+    @GetMapping("/contactCount")
+    public ResponseEntity<APIResponse<Integer>> contactCount() {
+        APIResponse<Integer> apiResponse = contactService.contactCount();
+        return ResponseEntity.status(apiResponse.getStatusCode()).body(apiResponse);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<ContactResponseData>> updateContact(@PathVariable Long id, @RequestBody UpdateContactRequest contact) {
+        log.info("Request coming in ::: {}", contact);
         APIResponse<ContactResponseData> apiResponse = contactService.updateContact(id, contact);
         return ResponseEntity.status(apiResponse.getStatusCode()).body(apiResponse);
     }
@@ -62,8 +79,8 @@ public class ContactController {
     }
 
     @PostMapping("/bulk-delete")
-    public ResponseEntity<APIResponse<Void>> bulkDeleteContacts(@RequestBody List<Long> contactIds) {
-        APIResponse<Void> apiResponse = contactService.bulkDeleteContacts(contactIds);
+    public ResponseEntity<APIResponse<Void>> bulkDeleteContacts(@RequestBody BulkDeleteRequest bulkDeleteRequest) {
+        APIResponse<Void> apiResponse = contactService.bulkDeleteContacts(bulkDeleteRequest);
         return ResponseEntity.status(apiResponse.getStatusCode()).body(apiResponse);
     }
 
@@ -74,6 +91,12 @@ public class ContactController {
             @RequestParam(value = "size", defaultValue = "10") Integer size
     ) {
         APIResponse<Page<ContactResponseData>> apiResponse = contactService.searchContacts(keyword, page, size);
+        return ResponseEntity.status(apiResponse.getStatusCode()).body(apiResponse);
+    }
+
+    @PostMapping("/toggleIsFavorite/{id}")
+    public ResponseEntity<APIResponse<ContactResponseData>> toggleIsFavorite(@PathVariable Long id) {
+        APIResponse<ContactResponseData> apiResponse = contactService.toggleFavorite(id);
         return ResponseEntity.status(apiResponse.getStatusCode()).body(apiResponse);
     }
 

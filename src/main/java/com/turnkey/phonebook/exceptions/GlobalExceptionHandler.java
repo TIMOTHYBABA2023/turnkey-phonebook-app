@@ -34,8 +34,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<APIError> handleAPIException(APIException e, HttpServletRequest request) {
         APIError apiError = new APIError();
         apiError.setTimestamp(String.valueOf(LocalDateTime.now()));
-        apiError.setStatusCode(500);
-        apiError.setMessage("An error occurred while processing your request.");
+        apiError.setStatusCode(e.getStatusCode());
+        apiError.setMessage(e.getMessage());
         apiError.setPath(request.getRequestURI());
 
         return ResponseEntity.status(e.getStatusCode()).body(apiError);
